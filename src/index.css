@@ -1,1 +1,27 @@
 @import "tailwindcss";
+
+@theme {
+  --color-ink: #0b2b3a;
+  --color-deep: #07202c;
+  --color-lagoon: #12808a;
+  --color-sun: #ffb703;
+  --color-mist: #eef5f6;
+  --color-muted: #4f6672;
+  --color-line: #d5e3e6;
+  --font-head: "Bricolage Grotesque", "Trebuchet MS", sans-serif;
+  --font-body: "Figtree", system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 76px;
+  }
+  body {
+    font-family: var(--font-body);
+    color: var(--color-ink);
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-head);
+  }
+}
