@@ -66,7 +66,7 @@ ul { padding: 0; margin: 0; list-style: none; }
   min-height: 78vh;
   display: grid; align-items: center;
   color: var(--white);
-  /* Layer order: dark overlay, your photo, gradient fallback if the photo is missing */
+  
   background:
     linear-gradient(rgba(7, 32, 44, .62), rgba(7, 32, 44, .72)),
     url("images/hero.jpg") center / cover no-repeat,
@@ -100,9 +100,6 @@ ul { padding: 0; margin: 0; list-style: none; }
   height: 180px; 
 }
 
-/*.media-bali  { background: linear-gradient(160deg, #7bc67e, #12808a); }
-.media-lisbon { background: linear-gradient(160deg, #ffb703, #e4572e); }
-.media-kyoto { background: linear-gradient(160deg, #c9d6ff, #5b4b8a); }*/
 
 .media-bali   { background: url("images/bali.jpg") center / cover no-repeat; }
 .media-lisbon { background: url("images/lisbon and porto.jpg") center / cover no-repeat; }
