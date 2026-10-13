@@ -1,8 +1,14 @@
+import Header from "./components/Header";
+import Hero from "./components/Hero";
+
 function App() {
   return (
-    <h1 className="p-8 text-4xl font-bold text-blue-600">
-      Tailwind is working
-    </h1>
+    <>
+      <Header />
+      <main>
+        <Hero />
+      </main>
+    </>
   );
 }
 
