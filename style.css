@@ -102,7 +102,7 @@ ul { padding: 0; margin: 0; list-style: none; }
 
 
 .media-bali   { background: url("images/bali.jpg") center / cover no-repeat; }
-.media-lisbon { background: url("images/lisbon and porto.jpg") center / cover no-repeat; }
+.media-lisbon { background: url("images/lisbon-porto.jpg") center / cover no-repeat; }
 .media-kyoto  { background: url("images/kyoto.jpg") center / cover no-repeat; }
 
 .card-body { 
