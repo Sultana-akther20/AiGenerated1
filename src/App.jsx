@@ -1,5 +1,6 @@
 import Header from "./components/Header";
 import Hero from "./components/Hero";
+import TourGrid from "./components/TourGrid";
 
 function App() {
   return (
@@ -7,6 +8,7 @@ function App() {
       <Header />
       <main>
         <Hero />
+        <TourGrid />
       </main>
     </>
   );
