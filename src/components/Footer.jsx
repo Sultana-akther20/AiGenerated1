@@ -32,7 +32,7 @@ function Footer() {
       <div className="mx-auto grid w-full max-w-[1120px] gap-8 px-5 pb-8 sm:grid-cols-[2fr_1fr_1fr]">
         <div>
           <p className="font-head text-xl font-extrabold text-white">World Wide Travel</p>
-          <p>Hand-planned trips since 2026.</p>
+          <p>Hand-planned trips as always.</p>
         </div>
         <FooterLinks title="Explore" links={exploreLinks} />
         <FooterLinks title="Plan" links={planLinks} />
