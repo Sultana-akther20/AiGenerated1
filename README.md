@@ -19,5 +19,4 @@ React and Tailwind CSS.
 - React (JavaScript)
 - Vite
 - Tailwind CSS
-
-## Project structure
+- Ai
