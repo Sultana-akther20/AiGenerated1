@@ -1,0 +1,23 @@
+CREATE TABLE IF NOT EXISTS users (
+  id SERIAL PRIMARY KEY,
+  email TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS tours (
+  id SERIAL PRIMARY KEY,
+  title TEXT NOT NULL,
+  region TEXT NOT NULL,
+  duration TEXT NOT NULL,
+  price INTEGER NOT NULL,
+  image TEXT NOT NULL,
+  image_alt TEXT NOT NULL,
+  features TEXT[] NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS session (
+  sid VARCHAR PRIMARY KEY,
+  sess JSON NOT NULL,
+  expire TIMESTAMP(6) NOT NULL
+);
