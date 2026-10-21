@@ -8,7 +8,7 @@ function TourCard({ tour }) {
     <article className="flex flex-col overflow-hidden rounded-[10px] border border-line bg-white">
       <img
         src={tour.image}
-        alt={tour.imageAlt}
+        alt={tour.image_alt}
         className="h-[180px] w-full object-cover"
       />
 
