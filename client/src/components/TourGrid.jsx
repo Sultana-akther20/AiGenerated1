@@ -1,11 +1,21 @@
-import { useState } from "react";
-import { tours } from "../data/siteData";
+import { useState, useEffect } from "react";
+import { api } from "../api";
 import TourCard from "./TourCard";
 
 const regions = ["All", "Asia", "Europe"];
 
 function TourGrid() {
+  const [tours, setTours] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [selectedRegion, setSelectedRegion] = useState("All");
+
+  useEffect(() => {
+    api("/api/tours")
+      .then(setTours)
+      .catch(() => setError("Could not load tours. Please try again later."))
+      .finally(() => setLoading(false));
+  }, []);
 
   const visibleTours =
     selectedRegion === "All"
@@ -39,6 +49,9 @@ function TourGrid() {
             </button>
           ))}
         </div>
+
+        {loading && <p className="text-muted">Loading tours...</p>}
+        {error && <p className="font-semibold text-red-600">{error}</p>}
 
         <div className="grid grid-cols-1 gap-7 md:grid-cols-2 lg:grid-cols-3">
           {visibleTours.map((tour) => (
