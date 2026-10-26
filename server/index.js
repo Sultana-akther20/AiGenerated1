@@ -5,8 +5,10 @@ import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
 import "dotenv/config";
 import { pool } from "./db.js";
+import Stripe from "stripe";
 
 const app = express();
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const PgStore = connectPgSimple(session);
 const isProd = process.env.NODE_ENV === "production";
 
