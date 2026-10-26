@@ -29,6 +29,14 @@ app.use(
   })
 );
 
+// Blocks anyone who isn't signed in
+function requireAuth(req, res, next) {
+  if (!req.session.userId) {
+    return res.status(401).json({ error: "Please sign in to continue" });
+  }
+  next();
+}
+
 // ---------- data ----------
 app.get("/api/tours", async (req, res) => {
   try {
