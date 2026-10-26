@@ -113,5 +113,75 @@ app.get("/api/auth/me", async (req, res) => {
   }
 });
 
+// ---------- checkout ----------
+app.post("/api/checkout", requireAuth, async (req, res) => {
+  const tourId = Number(req.body.tourId);
+  const travellers = Number(req.body.travellers);
+
+  // Validate what the browser sent (never trust it)
+  if (!Number.isInteger(tourId) || !Number.isInteger(travellers) || travellers < 1 || travellers > 20) {
+    return res.status(400).json({ error: "Invalid tour or number of travellers" });
+  }
+
+  const db = await pool.connect();
+  try {
+    // 1. Look up the REAL price in our own database
+    const tourResult = await db.query("SELECT id, title, price FROM tours WHERE id = $1", [tourId]);
+    const tour = tourResult.rows[0];
+    if (!tour) return res.status(404).json({ error: "Tour not found" });
+
+    const unitAmount = tour.price * 100; // pounds -> pence
+    const total = unitAmount * travellers;
+
+    // 2. Save the order and its item together (all or nothing)
+    await db.query("BEGIN");
+    const orderResult = await db.query(
+      `INSERT INTO orders (user_id, status, total_amount, currency)
+       VALUES ($1, 'pending', $2, 'gbp') RETURNING id`,
+      [req.session.userId, total]
+    );
+    const orderId = orderResult.rows[0].id;
+
+    await db.query(
+      `INSERT INTO order_items (order_id, tour_id, title, unit_price, quantity)
+       VALUES ($1, $2, $3, $4, $5)`,
+      [orderId, tour.id, tour.title, unitAmount, travellers]
+    );
+    await db.query("COMMIT");
+
+    // 3. Start a Stripe Checkout Session for this order
+    const userResult = await db.query("SELECT email FROM users WHERE id = $1", [req.session.userId]);
+
+    const session = await stripe.checkout.sessions.create({
+      mode: "payment",
+      customer_email: userResult.rows[0].email,
+      line_items: [
+        {
+          quantity: travellers,
+          price_data: {
+            currency: "gbp",
+            unit_amount: unitAmount,
+            product_data: { name: tour.title },
+          },
+        },
+      ],
+      metadata: { orderId: String(orderId) },
+      success_url: `${process.env.CLIENT_URL}/?order=${orderId}`,
+      cancel_url: `${process.env.CLIENT_URL}/?canceled=1`,
+    });
+
+    // 4. Remember which Stripe session belongs to this order
+    await db.query("UPDATE orders SET stripe_session_id = $1 WHERE id = $2", [session.id, orderId]);
+
+    res.json({ url: session.url });
+  } catch (err) {
+    await db.query("ROLLBACK").catch(() => {});
+    console.error(err);
+    res.status(500).json({ error: "Could not start checkout" });
+  } finally {
+    db.release();
+  }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`API running on port ${PORT}`));
