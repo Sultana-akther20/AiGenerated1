@@ -10,7 +10,7 @@ const app = express();
 const PgStore = connectPgSimple(session);
 const isProd = process.env.NODE_ENV === "production";
 
-app.set("trust proxy", 1); // needed when deployed behind Railway's proxy
+app.set("trust proxy", 1); 
 app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 app.use(express.json());
 

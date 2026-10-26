@@ -1,6 +1,6 @@
 # World Wide Travel
 
-A travel agency website, rebuilt from my Assignment 1 HTML/CSS site using React and Tailwind CSS, and extended in Assignment 3 with a real backend, a Postgres database, user authentication, and a live deployment.
+A travel agency website, rebuilt from my Assignment 1 HTML/CSS site using React + vite and Tailwind CSS, and extended in Assignment 3 with a real backend, a Postgres database, user authentication, and a live deployment.
 
 **Live site:** https://ai-generated1.vercel.app
 **API (tours endpoint):** https://travel-api-e693.onrender.com/api/tours
@@ -9,7 +9,7 @@ A travel agency website, rebuilt from my Assignment 1 HTML/CSS site using React 
 
 ## Features
 
-- Responsive travel agency site built with React and Tailwind CSS
+- Responsive travel agency site built with React+vite and Tailwind CSS
 - Tour packages loaded from a real Postgres database through a JSON API
 - Filter tours by region (All, Asia, Europe)
 - Traveller counter on each tour card with a live total price
