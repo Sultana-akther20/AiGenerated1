@@ -13,8 +13,55 @@ const PgStore = connectPgSimple(session);
 const isProd = process.env.NODE_ENV === "production";
 
 app.set("trust proxy", 1); 
+
+//app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
+//app.use(express.json());
 app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
+
+// ---------- Stripe webhook (needs the raw body, so it goes BEFORE express.json) ----------
+app.post(
+  "/api/stripe/webhook",
+  express.raw({ type: "application/json" }),
+  async (req, res) => {
+    let event;
+    try {
+      // Verify the message really came from Stripe
+      event = stripe.webhooks.constructEvent(
+        req.body,
+        req.headers["stripe-signature"],
+        process.env.STRIPE_WEBHOOK_SECRET
+      );
+    } catch (err) {
+      console.error("Webhook signature check failed:", err.message);
+      return res.status(400).send("Invalid signature");
+    }
+
+    if (event.type === "checkout.session.completed") {
+      const session = event.data.object;
+      const orderId = Number(session.metadata?.orderId);
+
+      if (session.payment_status === "paid" && orderId) {
+        try {
+          await pool.query(
+            `UPDATE orders
+             SET status = 'paid', paid_at = now()
+             WHERE id = $1 AND stripe_session_id = $2 AND status = 'pending'`,
+            [orderId, session.id]
+          );
+          console.log("Order", orderId, "marked as paid");
+        } catch (err) {
+          console.error(err);
+          return res.status(500).send("Database error");
+        }
+      }
+    }
+
+    res.json({ received: true });
+  }
+);
+
 app.use(express.json());
+
 
 app.use(
   session({
