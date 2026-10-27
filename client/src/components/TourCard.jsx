@@ -1,8 +1,38 @@
 import { useState } from "react";
+import { api } from "../api";
 import TravellerStepper from "./TravellerStepper";
 
-function TourCard({ tour }) {
+function TourCard({ tour, user, onSignInClick }) {
   const [travellers, setTravellers] = useState(1);
+  const [buying, setBuying] = useState(false);
+  const [error, setError] = useState("");
+
+  async function handleBuy() {
+    setError("");
+
+    // Not signed in: open the sign-in form instead
+    if (!user) {
+      onSignInClick();
+      return;
+    }
+
+    setBuying(true);
+    try {
+      // We send only WHICH tour and HOW MANY people. The price is looked up on the server.
+      const { url } = await api("/api/checkout", {
+        method: "POST",
+        body: JSON.stringify({ tourId: tour.id, travellers }),
+      });
+      window.location.href = url; // go to Stripe's hosted checkout page
+    } catch (err) {
+      if (err.status === 401) {
+        onSignInClick();
+      } else {
+        setError(err.message);
+      }
+      setBuying(false);
+    }
+  }
 
   return (
     <article className="flex flex-col overflow-hidden rounded-[10px] border border-line bg-white">
@@ -47,6 +77,21 @@ function TourCard({ tour }) {
             View Details
           </a>
         </div>
+
+        <button
+          type="button"
+          onClick={handleBuy}
+          disabled={buying}
+          className="mt-4 w-full rounded-full bg-sun px-6 py-3 font-semibold text-deep hover:bg-[#ffc933] disabled:opacity-60"
+        >
+          {buying ? "Redirecting to payment..." : "Buy now"}
+        </button>
+
+        {error && (
+          <p role="alert" className="mt-3 text-sm font-semibold text-red-600">
+            {error}
+          </p>
+        )}
       </div>
     </article>
   );
