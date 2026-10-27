@@ -4,7 +4,7 @@ import TourCard from "./TourCard";
 
 const regions = ["All", "Asia", "Europe"];
 
-function TourGrid() {
+function TourGrid({ user, onSignInClick }) {
   const [tours, setTours] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -55,7 +55,7 @@ function TourGrid() {
 
         <div className="grid grid-cols-1 gap-7 md:grid-cols-2 lg:grid-cols-3">
           {visibleTours.map((tour) => (
-            <TourCard key={tour.id} tour={tour} />
+            <TourCard key={tour.id} tour={tour} user={user} onSignInClick={onSignInClick} />
           ))}
         </div>
       </div>
