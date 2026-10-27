@@ -230,5 +230,32 @@ app.post("/api/checkout", requireAuth, async (req, res) => {
   }
 });
 
+// ---------- order lookup ----------
+app.get("/api/orders/:id", requireAuth, async (req, res) => {
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id)) {
+    return res.status(400).json({ error: "Invalid order id" });
+  }
+  try {
+    // Only the person who placed the order can see it
+    const orderResult = await pool.query(
+      `SELECT id, status, total_amount, currency, created_at, paid_at
+       FROM orders WHERE id = $1 AND user_id = $2`,
+      [id, req.session.userId]
+    );
+    const order = orderResult.rows[0];
+    if (!order) return res.status(404).json({ error: "Order not found" });
+
+    const itemsResult = await pool.query(
+      "SELECT title, unit_price, quantity FROM order_items WHERE order_id = $1",
+      [id]
+    );
+    res.json({ ...order, items: itemsResult.rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`API running on port ${PORT}`));
