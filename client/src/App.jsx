@@ -33,7 +33,7 @@ function App() {
       />
       <main>
         <Hero />
-        <TourGrid />
+        <TourGrid user={user} onSignInClick={() => setShowAuth(true)} />
         <Testimonials />
         <PlanTrip />
       </main>
