@@ -1,4 +1,5 @@
-import { useState } from "react";
+//import { useState } from "react";
+import { useState, useEffect } from "react";
 import { api } from "../api";
 import TravellerStepper from "./TravellerStepper";
 
@@ -6,6 +7,17 @@ function TourCard({ tour, user, onSignInClick }) {
   const [travellers, setTravellers] = useState(1);
   const [buying, setBuying] = useState(false);
   const [error, setError] = useState("");
+
+    // When the user comes back from Stripe with the browser's back button,
+  // the page is restored from cache, so reset the button
+  useEffect(() => {
+    function handlePageShow(event) {
+      if (event.persisted) setBuying(false);
+    }
+    window.addEventListener("pageshow", handlePageShow);
+    return () => window.removeEventListener("pageshow", handlePageShow);
+  }, []);
+
 
   async function handleBuy() {
     setError("");
