@@ -81,21 +81,21 @@ function OrderStatus({ orderId, onClose }) {
         )}
 
         {order && (
-          <div className="mb-4 rounded-lg bg-mist p-4 text-sm">
-            <p className="mb-2 font-semibold">
-              Order #{order.id} ·{" "}
-              <span className={order.status === "paid" ? "text-lagoon" : "text-muted"}>
-                {order.status}
-              </span>
-            </p>
-            {order.items.map((item) => (
-              <p key={item.title}>
-                {item.title} × {item.quantity}
-              </p>
-            ))}
-            <p className="mt-2 font-semibold">Total: {money(order.total_amount)}</p>
-          </div>
-        )}
+  <div className="mb-4 rounded-lg bg-mist p-4 text-sm">
+    <p className="mb-2 font-semibold">
+      Status:{" "}
+      <span className={order.status === "paid" ? "text-lagoon" : "text-muted"}>
+        {order.status === "paid" ? "Paid" : "Pending"}
+      </span>
+    </p>
+    {order.items.map((item) => (
+      <p key={item.title}>
+        {item.title} × {item.quantity}
+      </p>
+    ))}
+    <p className="mt-2 font-semibold">Total: {money(order.total_amount)}</p>
+  </div>
+)}
 
         <button
           type="button"
